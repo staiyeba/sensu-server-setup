@@ -1,4 +1,4 @@
-
+# Reference in relation to recent changes: https://sensuapp.org/docs/1.1/platforms/sensu-on-ubuntu-debian.html 
 # VARIABLES
 
 $RABBITMQ_PASSWD = "398hhgaihdliauhe893"
