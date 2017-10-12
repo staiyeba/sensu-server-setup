@@ -5,7 +5,7 @@ $RABBITMQ_PASSWD = "398hhgaihdliauhe893"
 
 $ADMIN_PASSWD = "sensuadminpass"
 
-$SENSU_VERSION = "0.23"
+$SENSU_VERSION = "0.27"
 
 $SENSU_CONFIG = "
 {
@@ -179,14 +179,14 @@ service { "redis-server" :
 # SENSU
      exec { "add-sensu-repo-key" :
              path => "/usr/bin/:/usr/sbin/:/usr/local/bin:/bin/:/sbin",
-             command => "curl http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add - ",
+             command => "curl https://sensu.global.ssl.fastly.net/apt/pubkey.gpg | apt-key add - ; apt-get update",
              unless => "ls /etc/apt/sources.list.d/sensu.list",
 	     require => [Package['redis-server'],Exec['add-sensu-user-in-rabbitmq']],
      }
 
      exec { "add-sensu-repo" :
              path => "/usr/bin/:/usr/sbin/:/usr/local/bin:/bin/:/sbin",
-             command => "echo ' deb     http://repos.sensuapp.org/apt sensu main' >> /etc/apt/sources.list.d/sensu.list ; apt-get update",
+             command => "echo ' deb     https://sensu.global.ssl.fastly.net/apt trusty main' >> /etc/apt/sources.list.d/sensu.list ; apt-get update",
              require => Exec["add-sensu-repo-key"],
              unless => "ls /etc/apt/sources.list.d/sensu.list"
      }
@@ -194,6 +194,7 @@ service { "redis-server" :
     package { "sensu" :
       ensure => present,
       require => Exec['add-sensu-repo'],
+      install_options => ['--force-yes'],
       }
 
     file { "/etc/sensu/config.json" :
@@ -242,6 +243,7 @@ service { "redis-server" :
     
     package { "uchiwa" :
       ensure => present,
+      install_options => ['--force-yes'],      
       require => Package['sensu'],
     }
 
