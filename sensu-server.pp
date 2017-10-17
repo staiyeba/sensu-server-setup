@@ -1,4 +1,3 @@
-# Reference in relation to recent changes: https://sensuapp.org/docs/1.1/platforms/sensu-on-ubuntu-debian.html 
 # VARIABLES
 
 $RABBITMQ_PASSWD = "398hhgaihdliauhe893"
@@ -179,14 +178,14 @@ service { "redis-server" :
 # SENSU
      exec { "add-sensu-repo-key" :
              path => "/usr/bin/:/usr/sbin/:/usr/local/bin:/bin/:/sbin",
-             command => "curl https://sensu.global.ssl.fastly.net/apt/pubkey.gpg | apt-key add - ; apt-get update",
+             command => "curl http://repositories.sensuapp.org/apt/pubkey.gpg | apt-key add - ",
              unless => "ls /etc/apt/sources.list.d/sensu.list",
 	     require => [Package['redis-server'],Exec['add-sensu-user-in-rabbitmq']],
      }
 
      exec { "add-sensu-repo" :
              path => "/usr/bin/:/usr/sbin/:/usr/local/bin:/bin/:/sbin",
-             command => "echo ' deb     https://sensu.global.ssl.fastly.net/apt trusty main' >> /etc/apt/sources.list.d/sensu.list ; apt-get update",
+             command => "echo ' deb     http://repositories.sensuapp.org/apt sensu main' >> /etc/apt/sources.list.d/sensu.list ; apt-get update",
              require => Exec["add-sensu-repo-key"],
              unless => "ls /etc/apt/sources.list.d/sensu.list"
      }
